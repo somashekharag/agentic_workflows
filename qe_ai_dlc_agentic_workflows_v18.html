@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>QE AI-DLC | Agentic Quality Engineering — v12</title>
+<style>
+:root{
+ --bg:#0b1020;--panel:#121b31;--panel2:#18243d;--ink:#edf3ff;--muted:#aab8d2;
+ --blue:#70a7ff;--cyan:#58d4d0;--violet:#b49aff;--amber:#ffc66d;--green:#7cdda5;
+ --red:#ff8e9a;--line:#2b3a59;--shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{overflow:hidden}
+.deck{height:100%;width:100%;position:relative}
+.slide{display:none;height:100%;width:100%;padding:42px 58px 76px;overflow:auto;background:
+ radial-gradient(ellipse at 85% 0%,rgba(81,129,220,.15),transparent 38%),
+ radial-gradient(ellipse at 0% 100%,rgba(62,197,188,.08),transparent 34%),var(--bg)}
+.slide.active{display:flex;flex-direction:column}
+.kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:12px}
+h1{font-size:clamp(34px,4vw,58px);line-height:1.04;margin:0 0 18px;letter-spacing:-.035em}
+h2{font-size:clamp(27px,3vw,40px);line-height:1.1;margin:0 0 12px;letter-spacing:-.025em}
+h3{font-size:17px;margin:0 0 8px}
+p{color:var(--muted);line-height:1.5;margin:6px 0}
+.subtitle{font-size:19px;max-width:980px;color:#c4d1e8;line-height:1.5}
+.small{font-size:12px;color:var(--muted);line-height:1.45}
+.footer{position:fixed;bottom:0;left:0;right:0;height:58px;padding:0 28px;display:flex;align-items:center;gap:14px;background:rgba(8,13,27,.92);border-top:1px solid var(--line);z-index:20}
+.brand{font-size:11px;letter-spacing:.12em;color:#91a4c4;font-weight:800}
+.progress{height:4px;background:#25324b;border-radius:8px;flex:1;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));width:0}
+.counter{font-size:12px;color:var(--muted);min-width:52px;text-align:center}
+.nav{display:flex;gap:8px}.nav button,.toc button{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 12px;border-radius:9px;cursor:pointer}
+.nav button:hover,.toc button:hover{border-color:var(--cyan);background:var(--panel2)}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:linear-gradient(145deg,rgba(24,36,61,.96),rgba(15,24,42,.96));border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow)}
+.card p{font-size:13px}.card .tag{display:inline-block;color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.pill{display:inline-flex;align-items:center;border:1px solid #385078;border-radius:100px;padding:5px 9px;color:#c7d8f5;font-size:11px;margin:3px 4px 3px 0;background:#162541}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;flex:1}
+.hero-visual{min-height:400px;display:flex;align-items:center;justify-content:center}
+.orbit{width:min(440px,90%);aspect-ratio:1;border:1px solid #395078;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(88,212,208,.1),transparent 58%)}
+.core{width:45%;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#315e9d,#236e7a);box-shadow:0 0 55px #3b9eaa66;font-weight:800;padding:15px}
+.node{position:absolute;width:118px;text-align:center;padding:11px 8px;border:1px solid #40567d;border-radius:12px;background:#14213a;font-size:12px;font-weight:700;box-shadow:var(--shadow)}
+.n1{top:-12px;left:calc(50% - 59px)}.n2{right:-35px;top:27%}.n3{right:-10px;bottom:12%}.n4{bottom:-12px;left:calc(50% - 59px)}.n5{left:-35px;bottom:12%}.n6{left:-10px;top:27%}
+.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin:12px 0}
+.step{flex:1 1 120px;min-width:112px;border:1px solid #385078;border-radius:12px;background:#14213a;padding:12px 10px;text-align:center;position:relative}
+.step b{display:block;font-size:12px;line-height:1.3}.step span{display:block;color:var(--muted);font-size:10px;line-height:1.35;margin-top:6px}
+.arrow{display:flex;align-items:center;color:var(--cyan);font-size:22px;font-weight:800}
+.agent{border-left:3px solid var(--blue);padding:8px 10px;background:#111d33;border-radius:0 9px 9px 0;margin:6px 0;font-size:12px}
+.agent strong{color:#dce9ff}.agent em{font-style:normal;color:var(--muted);display:block;margin-top:3px;font-size:11px}
+.workflow-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:10px}
+.workflow-head .outcome{max-width:260px;text-align:right;color:var(--cyan);font-size:12px}
+.swim{display:grid;grid-template-columns:150px 1fr;gap:8px;margin:9px 0;align-items:stretch}
+.swim .lane{border-radius:10px;background:#1a2945;padding:12px;font-size:12px;font-weight:800;color:#c6d8f7;display:flex;align-items:center}
+.swim .lane-content{display:flex;gap:7px;flex-wrap:wrap}
+.swim .mini{flex:1 1 130px;border:1px solid #34496e;background:#111d33;border-radius:9px;padding:10px;font-size:11px}
+.mini b{display:block;color:#e6efff;margin-bottom:4px}.mini span{color:var(--muted);font-size:10px}
+.callout{border:1px solid #3b6c7b;background:linear-gradient(100deg,#122d3b,#14213a);padding:14px 16px;border-radius:13px;color:#d9f8f3}
+.callout strong{color:var(--cyan)}
+.phase{padding:14px;border-radius:13px;border:1px solid var(--line);background:#14213a;min-height:124px}
+.phase .num{font-size:11px;color:var(--cyan);font-weight:800}.phase h3{margin:6px 0}.phase p{font-size:11px}
+.matrix{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:12px}
+.matrix th{text-align:left;color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.1em;padding:7px 10px}
+.matrix td{background:#14213a;padding:10px;border-top:1px solid #2c3d5c;border-bottom:1px solid #2c3d5c;color:#dce6f8}
+.matrix td:first-child{border-left:1px solid #2c3d5c;border-radius:9px 0 0 9px;font-weight:700}.matrix td:last-child{border-right:1px solid #2c3d5c;border-radius:0 9px 9px 0;color:var(--muted)}
+.level{position:relative;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#14213a;margin:8px auto;max-width:920px}
+.level:nth-child(1){width:100%}.level:nth-child(2){width:91%}.level:nth-child(3){width:82%}.level:nth-child(4){width:73%}.level:nth-child(5){width:64%;border-color:#3b9eaa;background:#12303b}
+.level b{display:inline-block;width:190px;color:#e8f1ff}.level span{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:8px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.toc{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}.toc button{font-size:11px}
+@media(max-width:850px){.slide{padding:28px 22px 75px}.hero{grid-template-columns:1fr}.hero-visual{min-height:300px}.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.swim{grid-template-columns:1fr}.workflow-head{display:block}.workflow-head .outcome{text-align:left}.node{width:92px;font-size:10px}.n2{right:-15px}.n6{left:-15px}}
+@media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}.flow{display:grid;grid-template-columns:1fr}.arrow{justify-content:center;transform:rotate(90deg)}.level b{display:block;width:auto;margin-bottom:5px}h1{font-size:36px}}
+@media print{body{overflow:visible;background:#fff}.slide{display:flex!important;page-break-after:always;height:100vh;background:#0b1020!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}.footer{display:none}}
+</style>
+<style>
+/* v7: architecture and agent inventory are separate, spacious slides */
+.architecture-slide{
+ padding:24px 38px 62px!important;
+ overflow:hidden!important;
+}
+.architecture-slide h2{font-size:clamp(30px,2.8vw,40px)!important;line-height:1.08;margin:0 0 7px}
+.architecture-slide .kicker{font-size:12px!important;margin-bottom:7px}
+.architecture-slide>.subtitle{font-size:14px!important;line-height:1.3;margin:0}
+.architecture-slide .arch-layout-full{
+ display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;min-height:0!important;
+ gap:7px!important;margin-top:13px!important;
+}
+.architecture-slide .arch-main{
+ display:flex!important;flex-direction:column!important;
+ gap:5px!important;min-width:0!important;min-height:0!important;
+ overflow:visible!important;width:100%!important;
+}
+.architecture-slide .arch-band{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;text-align:center!important;width:100%!important;
+ min-height:53px!important;padding:8px 14px!important;
+ border:2px solid #58769e!important;border-radius:11px!important;
+ background:#172943!important;box-shadow:0 4px 12px rgba(0,0,0,.16)!important;
+}
+.architecture-slide .arch-band b{font-size:14px!important;line-height:1.2!important;letter-spacing:.04em}
+.architecture-slide .arch-band span{display:block!important;font-size:12px!important;line-height:1.28!important;margin-top:4px!important;color:#d4e1f4!important}
+.architecture-slide .arch-band.master{
+ min-height:63px!important;background:#17496a!important;border:2px solid #4d9bc2!important;
+}
+.architecture-slide .arch-band.master b{font-size:17px!important}
+.architecture-slide .arch-arrow{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:7px!important;min-height:17px!important;line-height:1!important;
+ color:#b9d4f4!important;font-size:18px!important;font-weight:900!important;
+}
+.architecture-slide .arch-arrow span{font-size:18px!important;line-height:1!important;color:#9fc7ff!important}
+.architecture-slide .arch-arrow small{font-size:10px!important;letter-spacing:.08em;color:#aebed5}
+.architecture-slide .workflow-suite{
+ display:block!important;min-height:0!important;
+ border:2px solid #55a37e!important;border-radius:13px!important;
+ background:linear-gradient(145deg,#173e37,#102b28)!important;
+ padding:10px 12px!important;box-shadow:0 5px 16px rgba(0,0,0,.18)!important;
+}
+.architecture-slide .workflow-suite-title{
+ display:block!important;text-align:center;color:#e6fff0!important;
+ font-size:14px!important;font-weight:850!important;letter-spacing:.05em;
+ margin:0 0 7px!important;
+}
+.architecture-slide .workflow-suite-grid{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:7px 9px!important;
+}
+.architecture-slide .workflow-item{
+ display:block!important;min-width:0!important;
+ padding:8px 10px!important;border:1px solid rgba(172,226,197,.48)!important;
+ border-radius:9px!important;background:rgba(255,255,255,.075)!important;
+}
+.architecture-slide .workflow-item:nth-child(-n+2){border-top:1px solid rgba(172,226,197,.48)!important}
+.architecture-slide .workflow-item h3{
+ font-size:12.5px!important;line-height:1.2!important;color:#fff!important;
+ margin:0 0 4px!important;overflow-wrap:anywhere!important;
+}
+.architecture-slide .wf-desc{
+ font-size:11.5px!important;line-height:1.25!important;color:#b9f1d0!important;
+ margin:0 0 5px!important;
+}
+.architecture-slide .wf-agents{
+ font-size:10.5px!important;line-height:1.27!important;color:#e0eee7!important;margin:0!important;
+}
+.architecture-slide .arch-band.arch-integration{
+ min-height:53px!important;background:#244b43!important;border-color:#65a88b!important;
+}
+.architecture-slide .arch-band.arch-integration b{color:#e1fff0!important}
+.architecture-slide .arch-band.arch-integration span{color:#d2eee0!important}
+.architecture-slide .arch-band.arch-systems{
+ min-height:53px!important;background:#263650!important;border-color:#6682a9!important;
+}
+.architecture-slide .arch-foot{
+ font-size:10px!important;line-height:1.2!important;margin-top:1px!important;color:#b8c7dc!important;
+}
+
+/* Dedicated inventory page: large, legible category cards */
+.inventory-slide{
+ padding:25px 38px 62px!important;
+ overflow:hidden!important;
+}
+.inventory-slide h2{font-size:clamp(30px,2.8vw,40px)!important;line-height:1.08;margin:0 0 7px}
+.inventory-slide .kicker{font-size:12px!important;margin-bottom:7px}
+.inventory-slide>.subtitle{font-size:14px!important;line-height:1.3;margin:0}
+.inventory-page{
+ display:flex!important;flex-direction:column!important;flex:1 1 auto!important;
+ min-height:0!important;margin-top:13px!important;padding:13px 15px!important;
+ border:2px solid #526b91!important;border-radius:13px!important;
+ background:linear-gradient(160deg,#17243a,#111c30)!important;
+ box-shadow:0 5px 16px rgba(0,0,0,.18)!important;
+}
+.inventory-page-head{
+ display:flex!important;justify-content:space-between!important;align-items:center!important;
+ gap:14px!important;padding:0 2px 10px!important;border-bottom:1px solid #3a4f70!important;
+}
+.inventory-page-head b{display:block;color:#8ddbd4!important;font-size:12px!important;letter-spacing:.06em}
+.inventory-page-head span{display:block;color:#b6c6dc!important;font-size:11px!important;line-height:1.25;margin-top:3px}
+.inventory-count{color:#aebed5!important;font-size:10px!important;letter-spacing:.08em;white-space:nowrap}
+.inventory-page-grid{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:10px 18px!important;align-content:start!important;padding-top:6px!important;
+ min-height:0!important;flex:1 1 auto!important;
+}
+
+.inventory-slide .inventory-page-grid > .inv-group{
+ border:1px solid #405675!important;border-radius:9px!important;
+ background:rgba(255,255,255,.035)!important;padding:9px 11px!important;
+ margin:0!important;break-inside:avoid!important;
+}
+.inventory-slide .inventory-page-grid > .inv-group .inv-title{
+ font-size:13px!important;line-height:1.2!important;letter-spacing:.04em;
+ margin:0 0 7px!important;color:#8ddbd4!important;font-weight:850!important;
+}
+.inventory-slide .inventory-page-grid > .inv-group .inv-item{
+ display:block!important;font-size:11.5px!important;line-height:1.24!important;
+ margin:5px 0!important;padding-left:8px!important;border-left:2px solid #4e719b!important;
+}
+.inventory-slide .inventory-page-grid > .inv-group .inv-item b{font-size:11.5px!important;font-weight:750;color:#edf3ff!important}
+.inventory-slide .inventory-page-grid > .inv-group .inv-item small{
+ display:inline!important;font-size:10.5px!important;line-height:1.2!important;
+ margin-top:0!important;color:#afc0d8!important;
+}
+.inventory-slide .arch-foot{font-size:10px!important;line-height:1.25!important;color:#b8c7dc!important;margin-top:8px!important}
+@media(max-width:1150px){
+ .architecture-slide,.inventory-slide{overflow:auto!important}
+ .architecture-slide .workflow-suite-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .inventory-page-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.inventory-page-grid > .inv-group:nth-child(n){grid-column:auto;grid-row:auto}
+}
+@media print{
+ .architecture-slide,.inventory-slide{height:100vh!important;overflow:hidden!important;page-break-after:always}
+}
+</style>
+<style>
+/* Workflow agent detail links and accessible in-page modal */
+.architecture-slide .workflow-agent-link{
+ display:inline-flex!important;align-items:center!important;gap:6px!important;
+ margin-top:5px!important;padding:0!important;border:0!important;
+ color:#9fe7cf!important;background:transparent!important;
+ font-size:11.5px!important;font-weight:800!important;line-height:1.25!important;
+ text-decoration:underline!important;text-underline-offset:3px!important;
+ cursor:pointer!important;width:max-content!important;max-width:100%!important;
+}
+.architecture-slide .workflow-agent-link:after{content:"↗";font-size:13px}
+.architecture-slide .workflow-agent-link:hover{color:#fff!important}
+.architecture-slide .workflow-agent-link:focus-visible,
+.workflow-modal button:focus-visible{outline:3px solid #ffd27a!important;outline-offset:3px!important}
+.workflow-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;padding:24px}
+.workflow-modal.is-open{display:flex}
+.workflow-modal-backdrop{position:absolute;inset:0;background:rgba(3,8,18,.78);backdrop-filter:blur(5px)}
+.workflow-modal-panel{
+ position:relative;z-index:1;width:min(680px,94vw);max-height:min(82vh,760px);
+ display:flex;flex-direction:column;overflow:hidden;
+ border:1px solid #526b91;border-radius:16px;
+ background:linear-gradient(160deg,#1a2942,#101a2c);
+ box-shadow:0 24px 80px rgba(0,0,0,.55);color:#edf3ff;
+}
+.workflow-modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 24px 16px;border-bottom:1px solid #344866}
+.workflow-modal-kicker{font-size:10px;letter-spacing:.12em;font-weight:850;color:#82d9d2;margin-bottom:6px}
+.workflow-modal-header h2{font-size:22px;line-height:1.2;margin:0;color:#fff;overflow-wrap:anywhere}
+.workflow-modal-header p{font-size:13px;line-height:1.35;color:#b6c6dc;margin:6px 0 0}
+.workflow-modal-close{flex:0 0 auto;border:1px solid #526b91;border-radius:9px;background:#243652;color:#fff;font-size:24px;line-height:1;width:38px;height:38px;cursor:pointer}
+.workflow-modal-body{overflow:auto;padding:14px 24px 18px}
+.workflow-modal-body ol{margin:0;padding-left:26px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px}
+.workflow-modal-body li{padding:8px 10px;border:1px solid #344866;border-radius:8px;background:rgba(255,255,255,.045);font-size:13px;line-height:1.3;color:#e8f0fb}
+.workflow-modal-body li::marker{color:#82d9d2;font-weight:800}
+.workflow-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 24px;border-top:1px solid #344866}
+.workflow-modal-footer span{font-size:11px;color:#aebed5}
+.workflow-modal-done{border:1px solid #4d9bc2;border-radius:8px;background:#17496a;color:#fff;padding:8px 16px;font-size:12px;font-weight:750;cursor:pointer}
+body.modal-open{overflow:hidden}
+@media(max-width:600px){
+ .workflow-modal{padding:12px}
+ .workflow-modal-panel{width:100%;max-height:90vh}
+ .workflow-modal-header{padding:17px}
+ .workflow-modal-body{padding:12px 17px}
+ .workflow-modal-body ol{grid-template-columns:1fr}
+ .workflow-modal-footer{padding:12px 17px}
+}
+@media print{.workflow-modal{display:none!important}.architecture-slide .workflow-agent-link{text-decoration:none!important}}
+</style>
+<style>
+/* v9: place all six workflow cards in one horizontal row */
+.architecture-slide .workflow-suite{
+ padding:9px 10px!important;
+}
+.architecture-slide .workflow-suite-grid{
+ display:grid!important;
+ grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ grid-template-rows:1fr!important;
+ gap:7px!important;
+ align-items:stretch!important;
+}
+.architecture-slide .workflow-item{
+ min-width:0!important;
+ padding:8px 7px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+}
+.architecture-slide .workflow-item h3{
+ font-size:10.5px!important;
+ line-height:1.22!important;
+ overflow-wrap:anywhere!important;
+ word-break:normal!important;
+}
+.architecture-slide .workflow-item .wf-desc{
+ font-size:9.5px!important;
+ line-height:1.24!important;
+ margin-bottom:5px!important;
+}
+.architecture-slide .workflow-item .workflow-agent-link{
+ margin-top:auto!important;
+ padding-top:4px!important;
+ font-size:9.5px!important;
+ line-height:1.2!important;
+}
+@media(max-width:1150px){
+ .architecture-slide .workflow-suite-grid{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-template-rows:1fr!important;
+ }
+ .architecture-slide .workflow-item{padding:6px 5px!important}
+ .architecture-slide .workflow-item h3{font-size:9px!important}
+ .architecture-slide .workflow-item .wf-desc{font-size:8px!important}
+ .architecture-slide .workflow-item .workflow-agent-link{font-size:8px!important}
+}
+</style>
+<style>
+/* v10: draw directional arrows with CSS instead of font-dependent glyphs */
+.architecture-slide .arch-arrow{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:8px!important;
+ min-height:21px!important;
+ line-height:1!important;
+}
+.architecture-slide .arch-arrow span{
+ display:block!important;
+ position:relative!important;
+ width:3px!important;
+ height:13px!important;
+ padding:0!important;
+ margin:0!important;
+ background:#9fc7ff!important;
+ border-radius:2px!important;
+ font-size:0!important;
+ line-height:0!important;
+ color:transparent!important;
+}
+.architecture-slide .arch-arrow span:after{
+ content:""!important;
+ position:absolute!important;
+ left:50%!important;
+ bottom:-5px!important;
+ transform:translateX(-50%)!important;
+ width:0!important;
+ height:0!important;
+ border-left:6px solid transparent!important;
+ border-right:6px solid transparent!important;
+ border-top:7px solid #9fc7ff!important;
+}
+.architecture-slide .arch-arrow small{
+ font-size:10px!important;
+ line-height:1.1!important;
+ letter-spacing:.08em!important;
+ color:#aebed5!important;
+}
+</style>
+<style>
+/* v11: minimal workflow cards; full details are revealed in the modal */
+.architecture-slide .workflow-item{
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:space-between!important;
+ gap:10px!important;
+ min-height:112px!important;
+ padding:10px 8px!important;
+}
+.architecture-slide .workflow-item h3{
+ font-size:11px!important;
+ line-height:1.25!important;
+ margin:0!important;
+ overflow-wrap:anywhere!important;
+}
+.architecture-slide .workflow-item .workflow-agent-link{
+ margin-top:auto!important;
+ padding-top:7px!important;
+ font-size:10px!important;
+ line-height:1.2!important;
+}
+.workflow-modal-header p{
+ max-width:560px!important;
+}
+.workflow-modal-body ol{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+@media(max-width:600px){
+ .workflow-modal-body ol{grid-template-columns:1fr!important}
+}
+</style>
+
+<style>
+/* v12: clickable orchestrator names and balanced 3 x 2 workflow layout */
+.architecture-slide .workflow-suite-grid{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ grid-template-rows:repeat(2,minmax(0,1fr))!important;
+ gap:8px 10px!important;
+ align-items:stretch!important;
+}
+.architecture-slide .workflow-item{
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:center!important;
+ align-items:stretch!important;
+ min-height:82px!important;
+ padding:10px 11px!important;
+}
+.architecture-slide .workflow-item h3{
+ margin:0!important;
+ font-size:12px!important;
+ line-height:1.28!important;
+ overflow-wrap:anywhere!important;
+}
+.architecture-slide .workflow-name-link{
+ display:inline!important;
+ width:auto!important;
+ max-width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+ background:transparent!important;
+ color:#d8fff0!important;
+ font-size:12px!important;
+ line-height:1.28!important;
+ font-weight:850!important;
+ text-decoration:underline!important;
+ text-decoration-color:#78c9a4!important;
+ text-underline-offset:3px!important;
+ cursor:pointer!important;
+}
+.architecture-slide .workflow-name-link:after{
+ content:" ↗";
+ color:#9fe7cf!important;
+ font-size:12px!important;
+}
+.architecture-slide .workflow-name-link:hover{color:#fff!important}
+@media(max-width:1150px){
+ .architecture-slide .workflow-suite-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,minmax(0,1fr))!important;
+ }
+ .architecture-slide .workflow-item{min-height:76px!important;padding:8px!important}
+ .architecture-slide .workflow-item h3,
+ .architecture-slide .workflow-name-link{font-size:10.5px!important}
+}
+</style>
+
+
+<style>
+/* v13: compact workflow cards and robust CSS-drawn architecture arrows */
+.architecture-slide .workflow-suite-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,auto)!important;
+  align-content:center!important;
+  align-items:stretch!important;
+  gap:9px 12px!important;
+}
+.architecture-slide .workflow-item{
+  min-height:0!important;
+  height:auto!important;
+  padding:12px 13px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  text-align:center!important;
+  gap:0!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.09)!important;
+}
+.architecture-slide .workflow-item h3{
+  width:100%!important;
+  margin:0!important;
+  text-align:center!important;
+  font-size:clamp(11px,1vw,14px)!important;
+  line-height:1.3!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+.architecture-slide .workflow-name-link{
+  display:inline-block!important;
+  font-size:inherit!important;
+  line-height:inherit!important;
+  text-align:center!important;
+  text-decoration-thickness:1px!important;
+  text-underline-offset:3px!important;
+}
+.architecture-slide .workflow-name-link:after{
+  content:" ↗"!important;
+  font-size:.9em!important;
+}
+.architecture-slide .arch-arrow{
+  display:flex!important;
+  flex:0 0 25px!important;
+  min-height:25px!important;
+  height:25px!important;
+  overflow:visible!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  position:relative!important;
+  z-index:2!important;
+}
+.architecture-slide .arch-arrow span{
+  display:block!important;
+  position:relative!important;
+  flex:0 0 3px!important;
+  width:3px!important;
+  height:16px!important;
+  min-width:3px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:3px!important;
+  background:#a9ceff!important;
+  color:transparent!important;
+  font-size:0!important;
+  line-height:0!important;
+  overflow:visible!important;
+}
+.architecture-slide .arch-arrow span:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:3px!important;
+  height:16px!important;
+  border-radius:3px!important;
+  background:#a9ceff!important;
+}
+.architecture-slide .arch-arrow span:after{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:11px!important;
+  bottom:auto!important;
+  transform:translateX(-50%)!important;
+  width:0!important;
+  height:0!important;
+  border-left:6px solid transparent!important;
+  border-right:6px solid transparent!important;
+  border-top:8px solid #a9ceff!important;
+}
+.architecture-slide .arch-arrow small{
+  display:inline-block!important;
+  font-size:9px!important;
+  line-height:1.1!important;
+  color:#c4d5ef!important;
+  letter-spacing:.07em!important;
+}
+@media(max-width:1150px){
+  .architecture-slide .workflow-suite-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-template-rows:repeat(2,auto)!important;
+  }
+  .architecture-slide .workflow-item{min-height:0!important;padding:10px!important}
+  .architecture-slide .workflow-item h3,
+  .architecture-slide .workflow-name-link{font-size:11px!important}
+}
+</style>
+
+
+<style>
+/* v14: constrain the architecture diagram to 80% of the slide */
+.architecture-slide .arch-layout-full{
+  width:80%!important;
+  max-width:1500px!important;
+  align-self:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  flex:1 1 auto!important;
+}
+.architecture-slide .arch-main{
+  width:100%!important;
+  max-width:100%!important;
+}
+@media(max-width:900px){
+  .architecture-slide .arch-layout-full{
+    width:94%!important;
+  }
+}
+@media print{
+  .architecture-slide .arch-layout-full{
+    width:80%!important;
+  }
+}
+</style>
+
+
+<style>
+/* v15: keep the MCP label from shifting the arrow off the architecture centerline */
+.architecture-slide .arch-arrow:has(small){
+  position:relative!important;
+  justify-content:center!important;
+}
+.architecture-slide .arch-arrow:has(small) span{
+  position:absolute!important;
+  left:50%!important;
+  top:4px!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+}
+.architecture-slide .arch-arrow:has(small) small{
+  position:absolute!important;
+  left:calc(50% + 15px)!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+}
+</style>
+
+</head>
+<body>
+<div class="deck" id="deck">
+<section class="slide active">
+<div class="hero">
+<div>
+<div class="kicker">Enterprise Quality Engineering • AI-DLC</div>
+<h1>From AI-assisted testing to <span style="color:var(--cyan)">agentic QE</span></h1>
+<p class="subtitle">A workflow-led approach to Quality Engineering in which multiple specialized Copilot agents collaborate to plan, design, automate, execute and continuously improve quality.</p>
+<div style="margin:22px 0"><span class="pill">Multiple agentic workflows</span><span class="pill">Specialized Copilot agents</span><span class="pill">MCP-enabled tools</span><span class="pill">Human-governed autonomy</span></div>
+<div class="callout"><strong>Core idea</strong><br/>QE AI-DLC is not a collection of isolated agents. It is a coordinated system of end-to-end workflows, each composed of agents with clear responsibilities, shared context and measurable outcomes.</div>
+<p class="small" style="margin-top:20px">Strategy deck • Conceptual reference architecture • Adaptable to enterprise agile delivery</p>
+</div>
+<div class="hero-visual"><div class="orbit">
+<div class="core">QE<br/>ORCHESTRATOR</div>
+<div class="node n1">Requirements<br/>Intelligence</div><div class="node n2">Test<br/>Design</div><div class="node n3">Automation<br/>Engineering</div><div class="node n4">Execution &amp;<br/>Diagnosis</div><div class="node n5">Quality<br/>Governance</div><div class="node n6">Release<br/>Intelligence</div>
+</div></div>
+</div>
+</section>
+<section class="slide">
+<div class="kicker">01 • Operating model</div><h2>Overview of QE AI-DLC</h2>
+<p class="subtitle">AI-DLC is achieved through connected agentic workflows. Each workflow combines multiple purpose-built Copilot agents, tools, enterprise knowledge and approval gates to deliver a business outcome.</p>
+<div class="grid g3" style="margin-top:20px">
+<div class="card"><div class="tag">01 / Workflow layer</div><h3>Outcome-oriented workflows</h3><p>Examples: Story-to-Test Automation, Code-to-Regression and Test Failure-to-Resolution. A workflow spans activities, not just a single prompt.</p></div>
+<div class="card"><div class="tag">02 / Agent layer</div><h3>Specialized Copilot agents</h3><p>Each agent owns a bounded responsibility, follows an explicit contract and returns structured outputs for the next agent.</p></div>
+<div class="card"><div class="tag">03 / Enablement layer</div><h3>Tools, knowledge &amp; controls</h3><p>MCP servers, repositories, test platforms, CI/CD, RAG, workflow state, observability and human approvals enable safe execution.</p></div>
+</div>
+<h3 style="margin-top:22px">How the model works</h3>
+<div class="flow">
+<div class="step"><b>Trigger</b><span>Story, PR, pipeline, defect or release event</span></div><div class="arrow">→</div>
+<div class="step"><b>Orchestrate</b><span>Choose workflow, plan tasks and delegate</span></div><div class="arrow">→</div>
+<div class="step"><b>Collaborate</b><span>Agents exchange context and artifacts</span></div><div class="arrow">→</div>
+<div class="step"><b>Act &amp; validate</b><span>Use tools, check results and request approval</span></div><div class="arrow">→</div>
+<div class="step"><b>Learn</b><span>Publish evidence, metrics and feedback</span></div>
+</div>
+<div class="callout" style="margin-top:auto"><strong>Design principle:</strong> One workflow = a coordinated sequence or graph of agents. One agent can be reused by many workflows; workflows can run independently or be chained into a larger QE delivery pipeline.</div>
+</section>
+<section class="slide">
+<div class="kicker">02 • Workflow portfolio</div><h2>High-value end-to-end agentic workflows</h2>
+<p class="subtitle">Start with repeatable, measurable workflows that remove friction across the agile lifecycle. The examples below show the collaborating agent chain for each workflow.</p>
+<div class="grid g2" style="margin-top:16px">
+<div class="card"><div class="tag">01 • Story-to-Test Automation</div><h3>A new story is ready. How do we turn it into approved, tested automation?</h3><p>Requirement Analysis → Test Planner (planner.md + user approval) → Test Automation → Code Reviewer → Test Execution → PR Agent</p></div>
+<div class="card"><div class="tag">02 • Code-to-Regression</div><h3>A developer has changed some application code. Which existing tests should we execute to make sure the changes haven't broken anything else?</h3><p>Code Change Analyzer → Impact Analysis → Risk Assessment → Regression Test Selector → Test Execution Planner → Execution Orchestrator → Failure Classification → Quality Report Generator</p></div>
+<div class="card"><div class="tag">03 • Test Failure-to-Resolution</div><h3>A test has failed. Is it an application defect, an automation issue or an environment problem, and how do we resolve it?</h3><p>Failure Detection → Evidence Collection → Failure Classification → Root Cause Analysis → Code / Automation / Environment Diagnosis → Defect Creation → Fix Validation</p></div>
+<div class="card"><div class="tag">04 • Requirement Change-to-Regression</div><h3>A requirement has changed. Which test cases and automation assets need to be updated or rerun?</h3><p>Requirement Change Detection → Requirement Comparison → Impact Analysis → Risk Assessment → Test Case Update → Automation Impact Analysis → Test Case Review → Regression Execution</p></div>
+<div class="card"><div class="tag">05 • Defect-to-Regression</div><h3>A defect has been fixed. How do we make sure it never slips through regression testing again?</h3><p>Defect Analysis → Root Cause Analysis → Test Scenario Generation → Test Case Generation → Automation Feasibility → Automation Code Generation → Test Case Review → Regression Suite Publishing</p></div>
+<div class="card"><div class="tag">06 • Release Quality Intelligence</div><h3>Are we confident the product is ready for release, and what quality risks remain?</h3><p>Coverage Analysis → Execution Analysis → Defect Risk Analysis → Performance / Security / Accessibility Assessment → Release Risk Assessment → Readiness Recommendation → Quality Report</p></div>
+</div>
+</section>
+<section class="slide architecture-slide">
+<div class="kicker">03 • Detailed reference architecture</div>
+<h2>Enterprise Agentic QE Architecture</h2>
+<p class="subtitle">A master orchestrator routes events into six outcome-oriented workflows, supported by specialized agents and governed enterprise integrations.</p>
+<div class="arch-layout arch-layout-full">
+<div class="arch-main">
+<div class="arch-band entry-band">
+<b>ENTRY POINTS &amp; EVENT TRIGGERS</b>
+<span>Copilot Chat • Jira Stories / Requirement Changes • Pull Requests • CI/CD • Test Failures • Defects • Release Requests</span>
+</div>
+<div class="arch-arrow"><span>▼</span></div>
+<div class="arch-band master">
+<b>ITAF QE MASTER ORCHESTRATOR</b>
+<span>Intent detection • Workflow selection • Delegation • Cross-workflow coordination • Status tracking • Result consolidation</span>
+</div>
+<div class="arch-arrow"><span>▼</span></div>
+<div class="workflow-suite">
+<div class="workflow-suite-title">WORKFLOW ORCHESTRATORS &amp; SPECIALIZED AGENTS</div>
+<div class="workflow-suite-grid">
+<div class="workflow-item">
+<h3><a aria-controls="workflow-agent-modal" aria-haspopup="dialog" aria-label="View description and participating agents for 1. StoryToTestOrchestrator" class="workflow-agent-link workflow-name-link" data-workflow="1" href="#workflow-1" role="button">1. StoryToTestOrchestrator</a></h3>
+
+</div>
+<div class="workflow-item">
+<h3><a aria-controls="workflow-agent-modal" aria-haspopup="dialog" aria-label="View description and participating agents for 2. CodeToRegressionOrchestrator" class="workflow-agent-link workflow-name-link" data-workflow="2" href="#workflow-2" role="button">2. CodeToRegressionOrchestrator</a></h3>
+
+</div>
+<div class="workflow-item">
+<h3><a aria-controls="workflow-agent-modal" aria-haspopup="dialog" aria-label="View description and participating agents for 3. TestFailureToResolutionOrchestrator" class="workflow-agent-link workflow-name-link" data-workflow="3" href="#workflow-3" role="button">3. TestFailureToResolutionOrchestrator</a></h3>
+
+</div>
+<div class="workflow-item">
+<h3><a aria-controls="workflow-agent-modal" aria-haspopup="dialog" aria-label="View description and participating agents for 4. RequirementChangeToRegressionOrchestrator" class="workflow-agent-link workflow-name-link" data-workflow="4" href="#workflow-4" role="button">4. RequirementChangeToRegressionOrchestrator</a></h3>
+
+</div>
+<div class="workflow-item">
+<h3><a aria-controls="workflow-agent-modal" aria-haspopup="dialog" aria-label="View description and participating agents for 5. DefectToRegressionOrchestrator" class="workflow-agent-link workflow-name-link" data-workflow="5" href="#workflow-5" role="button">5. DefectToRegressionOrchestrator</a></h3>
+
+</div>
+<div class="workflow-item">
+<h3><a aria-controls="workflow-agent-modal" aria-haspopup="dialog" aria-label="View description and participating agents for 6. ReleaseQualityIntelligenceOrchestrator" class="workflow-agent-link workflow-name-link" data-workflow="6" href="#workflow-6" role="button">6. ReleaseQualityIntelligenceOrchestrator</a></h3>
+
+</div>
+</div>
+</div>
+<div class="arch-arrow"><span>▼</span> <small>TOOLS INVOKED THROUGH MCP</small></div>
+<div class="arch-band arch-integration">
+<b>MCP &amp; ENTERPRISE INTEGRATION LAYER</b>
+<span>ITAF MCP Server • Jira / ALM Octane MCP • Confluence MCP • Git / Bitbucket • Jenkins • SauceLabs • Splunk • WireMock • Nexus</span>
+</div>
+<div class="arch-arrow"><span>▼</span></div>
+<div class="arch-band arch-systems">
+<b>ENTERPRISE SYSTEMS, DATA &amp; KNOWLEDGE</b>
+<span>Requirements &amp; acceptance criteria • Source code • Test assets • Execution evidence • Defects • Environments • API specifications • Framework standards</span>
+</div>
+</div>
+</div>
+</section>
+<section class="slide inventory-slide">
+<div class="kicker">03B • Shared capability catalog</div>
+<h2>Reusable QE Agent Inventory</h2>
+<p class="subtitle">A reusable catalog of specialized agent capabilities, grouped by responsibility. Workflow participation is shown on the architecture slide.</p>
+<div class="inventory-page">
+<div class="inventory-page-head">
+<div><b>AGENT CAPABILITY CATALOG</b><span>Logical capabilities may be implemented as individual agents or consolidated where clear responsibility boundaries are retained.</span></div>
+<div class="inventory-count">REUSABLE • MODULAR • GOVERNED</div>
+</div>
+<div class="inventory-page-grid">
+<div class="inv-group">
+<div class="inv-title">Requirements &amp; Knowledge</div>
+<div class="inv-item"><b>Requirement Analysis Agent</b><small>Interprets stories, acceptance criteria and business rules.</small></div>
+<div class="inv-item"><b>Requirement Change Detector</b><small>Finds changes between requirement versions.</small></div>
+<div class="inv-item"><b>Requirement Comparison Agent</b><small>Summarizes additions, changes and removals.</small></div>
+<div class="inv-item"><b>Knowledge Retrieval Agent</b><small>Retrieves relevant enterprise knowledge.</small></div>
+<div class="inv-item"><b>Traceability Agent</b><small>Maintains requirement-to-test links.</small></div>
+<div class="inv-item"><b>Impact Analysis Agent</b><small>Identifies affected services and test assets.</small></div>
+</div>
+<div class="inv-group">
+<div class="inv-title">Test Design &amp; Automation</div>
+<div class="inv-item"><b>Test Scenario Generator</b><small>Creates positive, negative and edge scenarios.</small></div>
+<div class="inv-item"><b>Test Case Generator</b><small>Builds detailed test cases from scenarios.</small></div>
+<div class="inv-item"><b>Test Case Reviewer</b><small>Checks completeness, quality and duplication.</small></div>
+<div class="inv-item"><b>Test Case Update Agent</b><small>Updates tests for changed requirements.</small></div>
+<div class="inv-item"><b>Automation Feasibility Agent</b><small>Assesses automation suitability and priority.</small></div>
+<div class="inv-item"><b>Automation Code Generator</b><small>Generates UI, API and other test scripts.</small></div>
+<div class="inv-item"><b>Code Review Agent</b><small>Checks code quality and framework standards.</small></div>
+</div>
+<div class="inv-group">
+<div class="inv-title">Execution &amp; Diagnosis</div>
+<div class="inv-item"><b>Code Change Analyzer</b><small>Analyzes changed components and dependencies.</small></div>
+<div class="inv-item"><b>Regression Test Selector</b><small>Selects tests based on change impact and risk.</small></div>
+<div class="inv-item"><b>Test Execution Planner</b><small>Plans execution order and configuration.</small></div>
+<div class="inv-item"><b>Execution Orchestrator</b><small>Triggers and coordinates test runs.</small></div>
+<div class="inv-item"><b>Failure Detection &amp; Classification</b><small>Detects and categorizes test failures.</small></div>
+<div class="inv-item"><b>Evidence Collection Agent</b><small>Collects logs, screenshots and traces.</small></div>
+<div class="inv-item"><b>Root Cause Analysis Agent</b><small>Determines probable failure causes.</small></div>
+<div class="inv-item"><b>Diagnosis Agents</b><small>Investigate code, automation and environment issues.</small></div>
+<div class="inv-item"><b>Fix Validation Agent</b><small>Validates fixes through targeted tests.</small></div>
+</div>
+<div class="inv-group">
+<div class="inv-title">Defect, Risk &amp; Release</div>
+<div class="inv-item"><b>Defect Analysis Agent</b><small>Assesses defect details, severity and impact.</small></div>
+<div class="inv-item"><b>Defect Creation Agent</b><small>Creates defects with supporting evidence.</small></div>
+<div class="inv-item"><b>Risk Assessment Agent</b><small>Evaluates application and testing risks.</small></div>
+<div class="inv-item"><b>Defect Risk Analysis Agent</b><small>Assesses open-defect exposure for releases.</small></div>
+<div class="inv-item"><b>Coverage Analysis Agent</b><small>Evaluates requirement and test coverage.</small></div>
+<div class="inv-item"><b>Execution Analysis Agent</b><small>Analyzes execution health and trends.</small></div>
+<div class="inv-item"><b>NFR Assessment Agents</b><small>Assess performance, security and accessibility.</small></div>
+<div class="inv-item"><b>Release Risk Assessment Agent</b><small>Consolidates technical and business risks.</small></div>
+<div class="inv-item"><b>Readiness Recommendation Agent</b><small>Produces evidence-based release guidance.</small></div>
+<div class="inv-item"><b>Quality Report Generator</b><small>Creates quality and release reports.</small></div>
+</div>
+<div class="inv-group">
+<div class="inv-title">Test Management &amp; Publishing</div>
+<div class="inv-item"><b>Test Management Publisher</b><small>Publishes test cases and results to test tools.</small></div>
+<div class="inv-item"><b>Regression Suite Publisher</b><small>Maintains reusable regression suite membership.</small></div>
+</div>
+</div>
+<div class="inventory-note">Agent responsibilities are capability definitions; implementation boundaries can be adjusted to suit governance, reuse and orchestration needs.</div>
+</div>
+</section>
+<section class="slide">
+<div class="kicker">04 • Maturity journey</div><h2>Maturity journey for AI-driven QE</h2>
+<p class="subtitle">Progress from individual productivity gains to governed, event-driven and increasingly autonomous quality outcomes. Autonomy should expand only as reliability, controls and evidence mature.</p>
+<div style="margin:20px auto 10px;width:100%">
+<div class="level"><b>Level 1 • AI-assisted QE</b><span>Individual agents assist with analysis, test design, coding and documentation. Human drives each task.</span></div>
+<div class="level"><b>Level 2 • Orchestrated QE</b><span>Multiple agents collaborate within a defined workflow; handoffs and outputs are standardized.</span></div>
+<div class="level"><b>Level 3 • Event-driven QE</b><span>Stories, PRs, pipeline failures and defects trigger workflows automatically with approvals.</span></div>
+<div class="level"><b>Level 4 • Bounded autonomous QE</b><span>Agents diagnose, plan, execute and validate permitted actions; exceptions escalate to people.</span></div>
+<div class="level"><b>Level 5 • Predictive QE</b><span>Quality signals anticipate risk, optimize testing and proactively recommend prevention.</span></div>
+</div>
+<div class="grid g3" style="margin-top:12px">
+<div class="card"><h3>People</h3><p>Shift from repetitive execution to review, exception handling and quality decisions.</p></div>
+<div class="card"><h3>Process</h3><p>Standardize workflow definitions, agent contracts, evidence and approval boundaries.</p></div>
+<div class="card"><h3>Technology</h3><p>Build reliable tool interfaces, state management, observability, knowledge and policy controls.</p></div>
+</div>
+<p class="small" style="margin-top:auto">Maturity is not “maximum autonomy everywhere”. High-impact actions such as production changes, merges, defect closure and release decisions remain subject to explicit authorization.</p>
+</section>
+
+<section class="slide">
+<div class="kicker">06 • Workflow 01</div>
+<div class="workflow-head">
+  <div><h2>Story-to-Test Automation</h2><p class="subtitle">Solution architecture: enrich the story, obtain an approved test plan, then generate, review, execute and submit automation through ITAF.</p></div>
+  <div class="outcome">OUTCOME<br/><b>Approved, validated automation code submitted through a pull request</b></div>
+</div>
+
+<div class="flow story-architecture-flow">
+  <div class="step"><b>Enterprise Sources</b><span>Jira story and acceptance criteria • ALM Octane test cases • Confluence knowledge</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>1. Requirement Analysis Agent</b><span>Analyzes source material, identifies gaps and produces enriched acceptance criteria</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>2. Test Planner Agent</b><span>Creates planner.md with features, scenarios, test conditions and coverage</span></div>
+  <div class="arrow">→</div>
+  <div class="step approval-step"><b>Human Approval Gate</b><span>Reviews and approves planner.md before automation proceeds</span></div>
+</div>
+
+<div class="approval-bridge"><span>Approved planner.md and enriched acceptance criteria are handed off to automation</span><b>↓</b></div>
+
+<div class="flow story-architecture-flow">
+  <div class="step"><b>3. Test Automation Agent</b><span>Generates test automation scripts using ITAF standards and reusable components</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>4. Code Reviewer Agent</b><span>Checks code quality, correctness and compliance with ITAF and coding standards</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>5. Test Execution Agent</b><span>Executes generated tests through ITAF and analyzes execution results</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>6. PR Agent</b><span>Creates a pull request with automation code, test evidence and execution details</span></div>
+</div>
+
+<div class="swim">
+  <div class="lane">Tools &amp; integrations</div>
+  <div class="lane-content">
+    <div class="mini"><b>Discover &amp; enrich</b><span>Jira • ALM Octane • Confluence • API specifications • repository and framework knowledge</span></div>
+    <div class="mini"><b>Generate &amp; execute</b><span>ITAF automation libraries • ITAF Test Execution API • test environments • execution reports</span></div>
+    <div class="mini"><b>Publish</b><span>Git / Bitbucket • branch and pull-request creation • test evidence and traceability links</span></div>
+  </div>
+</div>
+<div class="callout"><strong>Control points:</strong> User approval of planner.md is required before automation generation. Code review must pass before execution and PR creation; failed checks return for correction rather than progressing automatically.</div>
+<p class="small">Measures: requirement enrichment quality • planner approval cycle time • acceptance-criteria coverage • automation generation and review rework • execution pass rate • PR lead time.</p>
+<style>
+.story-architecture-flow{align-items:stretch!important;gap:7px!important;margin:10px 0!important;flex-wrap:nowrap!important}
+.story-architecture-flow .step{flex:1 1 0!important;min-width:0!important;padding:11px 8px!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+.story-architecture-flow .step b{font-size:11px!important;line-height:1.25!important}
+.story-architecture-flow .step span{font-size:9.5px!important;line-height:1.3!important}
+.story-architecture-flow .arrow{flex:0 0 15px!important;font-size:18px!important}
+.story-architecture-flow .approval-step{border-color:#c59b4b!important;background:#302a1d!important}
+.approval-bridge{display:flex;align-items:center;justify-content:center;gap:12px;margin:1px auto 4px;padding:4px 12px;color:#c9d8ee;font-size:10px;text-align:center}
+.approval-bridge b{font-size:17px;color:#8fd5bd}
+@media(max-width:900px){.story-architecture-flow{flex-wrap:wrap!important}.story-architecture-flow .step{flex:1 1 38%!important}.story-architecture-flow .arrow{display:none!important}}
+</style>
+</section>
+<section class="slide">
+<div class="kicker">06 • Workflow 02</div>
+<div class="workflow-head">
+  <div><h2>Code-to-Regression</h2><p class="subtitle">Solution architecture: analyze code changes, understand impact and risk, select the right regression tests, then execute and report through ITAF.</p></div>
+  <div class="outcome">OUTCOME<br/><b>Targeted, risk-based regression with faster and more relevant feedback</b></div>
+</div>
+<div class="flow code-regression-flow">
+  <div class="step"><b>Code Change / Pull Request</b><span>Git / Bitbucket commits, changed files, diff and service metadata</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>1. Code Change Analyzer Agent</b><span>Identifies changed files, classes, methods, APIs and code symbols</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>2. Impact Analysis Agent</b><span>Maps dependencies and identifies affected services, APIs and user journeys</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>3. Risk Assessment Agent</b><span>Evaluates business criticality, change complexity, defect history and coverage gaps</span></div>
+</div>
+<div class="flow code-regression-flow">
+  <div class="step"><b>4. Regression Test Selector Agent</b><span>Selects relevant ALM Octane and ITAF tests using impact, traceability and execution history</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>5. Test Execution Planner Agent</b><span>Defines test order, grouping, environment, runner options, data and parallelism</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>6. Execution Orchestrator Agent</b><span>Triggers approved runs through ITAF and monitors execution status</span></div>
+  <div class="arrow">→</div>
+  <div class="step"><b>7. Failure Classification Agent</b><span>Classifies failures as application, automation, environment, data or dependency issues</span></div>
+</div>
+<div class="flow code-regression-flow final-report-flow">
+  <div class="step"><b>8. Quality Report Generator Agent</b><span>Consolidates selected coverage, execution results, failure categories and residual risk</span></div>
+  <div class="arrow">→</div>
+  <div class="step report-step"><b>Regression Quality Report</b><span>Impacted areas • Selected and executed tests • Failures • Risk summary • Recommended follow-up</span></div>
+</div>
+<div class="swim">
+  <div class="lane">Decision inputs &amp; integrations</div>
+  <div class="lane-content">
+    <div class="mini"><b>Change context</b><span>Git / Bitbucket diff • source code • dependency graph • service ownership • API specifications</span></div>
+    <div class="mini"><b>Test context</b><span>ALM Octane test cases • ITAF automation assets • requirement traceability • Cucumber tags • execution history and flakiness</span></div>
+    <div class="mini"><b>Execution context</b><span>ITAF runner options • environments • test data • CI pipeline • logs and evidence</span></div>
+  </div>
+</div>
+<div class="callout"><strong>Control points:</strong> Regression selection is evidence-based and can be reviewed before execution. Mandatory suites and release gates are never silently bypassed. Failures needing deeper investigation can be handed to TestFailureToResolutionOrchestrator.</div>
+<p class="small">Measures: regression duration • test selection precision • impacted-component coverage • failure detection rate • escaped defects • pipeline feedback time.</p>
+<style>
+.code-regression-flow{align-items:stretch!important;gap:7px!important;margin:9px 0!important;flex-wrap:nowrap!important}
+.code-regression-flow .step{flex:1 1 0!important;min-width:0!important;padding:10px 7px!important;display:flex!important;flex-direction:column!important;justify-content:center!important}
+.code-regression-flow .step b{font-size:10.5px!important;line-height:1.24!important}
+.code-regression-flow .step span{font-size:9px!important;line-height:1.27!important}
+.code-regression-flow .arrow{flex:0 0 14px!important;font-size:17px!important}
+.code-regression-flow .report-step{border-color:#4d9b83!important;background:#17352f!important}
+@media(max-width:900px){.code-regression-flow{flex-wrap:wrap!important}.code-regression-flow .step{flex:1 1 38%!important}.code-regression-flow .arrow{display:none!important}}
+</style>
+</section>
+<section class="slide">
+<div class="kicker">06 • Workflow 03</div>
+<div class="workflow-head"><div><h2>Test Failure-to-Resolution</h2><p class="subtitle">Correlate execution evidence with application and automation context to identify probable causes and route the right action.</p></div><div class="outcome">OUTCOME<br/><b>Lower triage time and faster recovery</b></div></div>
+<div class="flow">
+<div class="step"><b>Failed test</b><span>CI / ITAF execution event</span></div><div class="arrow">→</div>
+<div class="step"><b>Evidence Collector</b><span>Logs, screenshots, traces, network and run metadata</span></div><div class="arrow">→</div>
+<div class="step"><b>Failure Classifier</b><span>Product, automation, data, environment or infrastructure</span></div><div class="arrow">→</div>
+<div class="step"><b>Root Cause Analyzer</b><span>Correlate signals and historical patterns</span></div>
+</div>
+<div class="grid g3" style="margin-top:8px">
+<div class="card"><div class="tag">Branch A • Product</div><h3>Code Diagnosis Agent</h3><p>Inspect relevant code, identify likely source locations and suggest a fix with evidence.</p></div>
+<div class="card"><div class="tag">Branch B • Automation</div><h3>Automation Diagnosis Agent</h3><p>Inspect locators, waits, test data, framework usage and flaky-test history.</p></div>
+<div class="card"><div class="tag">Branch C • Environment</div><h3>Environment Diagnosis Agent</h3><p>Inspect service health, connectivity, configuration, infrastructure and dependencies.</p></div>
+</div>
+<div class="flow">
+<div class="step"><b>Recommended action</b><span>Defect, code issue, script issue or environment ticket</span></div><div class="arrow">→</div>
+<div class="step"><b>Defect / Work Item Agent</b><span>Create or update with evidence and classification</span></div><div class="arrow">→</div>
+<div class="step"><b>Fix Validator</b><span>Rerun targeted tests and confirm outcome</span></div>
+</div>
+<div class="callout"><strong>Control point:</strong> Diagnosis agents recommend changes; code modification, merge and defect closure require authorized human or policy approval.</div>
+<p class="small">Measures: mean time to triage • classification accuracy • actionable diagnosis rate • duplicate defect rate • time to verified fix.</p>
+</section>
+<section class="slide">
+<div class="kicker">06 • Workflow 04</div>
+<div class="workflow-head"><div><h2>Requirement Change-to-Regression</h2><p class="subtitle">Keep test assets aligned as acceptance criteria, business rules or design decisions evolve during a sprint.</p></div><div class="outcome">OUTCOME<br/><b>Reduced stale tests and change-related gaps</b></div></div>
+<div class="flow">
+<div class="step"><b>Story updated</b><span>New AC, rule, API contract or linked design</span></div><div class="arrow">→</div>
+<div class="step"><b>Change Detector</b><span>Identify changed version and affected story</span></div><div class="arrow">→</div>
+<div class="step"><b>Requirement Comparator</b><span>Explain additions, removals and semantic changes</span></div><div class="arrow">→</div>
+<div class="step"><b>Impact Analyzer</b><span>Find linked tests, features, APIs and components</span></div>
+</div>
+<div class="flow">
+<div class="step"><b>Test Case Updater</b><span>Recommend new, modified and retired cases</span></div><div class="arrow">→</div>
+<div class="step"><b>Automation Impact Agent</b><span>Find affected scripts, page objects and contracts</span></div><div class="arrow">→</div>
+<div class="step"><b>Review Agent</b><span>Check traceability and coverage completeness</span></div><div class="arrow">→</div>
+<div class="step"><b>Regression Runner</b><span>Execute approved impacted suite</span></div>
+</div>
+<div class="swim"><div class="lane">Outputs</div><div class="lane-content"><div class="mini"><b>Change impact report</b><span>Changed requirements and impacted assets</span></div><div class="mini"><b>Test updates</b><span>Proposed test case / automation changes</span></div><div class="mini"><b>Validation evidence</b><span>Updated traceability and regression results</span></div></div></div>
+<div class="callout"><strong>Control point:</strong> Preserve previous versions and require review before retiring test assets or overwriting approved test cases.</div>
+<p class="small">Measures: change-to-impact analysis time • stale test rate • traceability completeness • change-related defect leakage.</p>
+</section>
+<section class="slide">
+<div class="kicker">06 • Workflow 05</div>
+<div class="workflow-head"><div><h2>Defect-to-Regression</h2><p class="subtitle">Turn every confirmed defect into durable test coverage so that the same failure is less likely to recur.</p></div><div class="outcome">OUTCOME<br/><b>Continuous learning from defects</b></div></div>
+<div class="flow">
+<div class="step"><b>Defect resolved</b><span>Bug, incident or escaped defect</span></div><div class="arrow">→</div>
+<div class="step"><b>Defect Analyzer</b><span>Understand symptom, conditions and severity</span></div><div class="arrow">→</div>
+<div class="step"><b>Root Cause Agent</b><span>Read fix, logs, linked story and component context</span></div><div class="arrow">→</div>
+<div class="step"><b>Scenario Generator</b><span>Build reproduction and prevention scenarios</span></div>
+</div>
+<div class="flow">
+<div class="step"><b>Test Case Generator</b><span>Define steps, expected behavior and test data</span></div><div class="arrow">→</div>
+<div class="step"><b>Automation Feasibility Agent</b><span>Assess repeatability, value and dependencies</span></div><div class="arrow">→</div>
+<div class="step"><b>Automation Generator</b><span>Create or extend automated regression</span></div><div class="arrow">→</div>
+<div class="step"><b>Suite Publisher</b><span>Link defect, test and suite; schedule validation</span></div>
+</div>
+<div class="grid g3" style="margin-top:12px">
+<div class="card"><h3>Traceability</h3><p>Defect ↔ root cause ↔ test case ↔ automation asset.</p></div>
+<div class="card"><h3>Reuse</h3><p>Search existing regression assets before creating duplicates.</p></div>
+<div class="card"><h3>Learning loop</h3><p>Feed recurring defect patterns into risk and test planning.</p></div>
+</div>
+<div class="callout"><strong>Control point:</strong> A defect is not considered covered merely because a test was generated. Require review, successful execution and traceability.</div>
+<p class="small">Measures: resolved defects with regression coverage • recurrence rate • defect-to-test lead time • duplicate test creation.</p>
+</section>
+<section class="slide">
+<div class="kicker">06 • Workflow 06</div>
+<div class="workflow-head"><div><h2>Release Quality Intelligence</h2><p class="subtitle">Consolidate evidence from testing and engineering systems into a transparent, risk-based release readiness assessment.</p></div><div class="outcome">OUTCOME<br/><b>Evidence-based release decisions</b></div></div>
+<div class="grid g3">
+<div class="card"><div class="tag">Evidence stream 1</div><h3>Coverage Analyzer</h3><p>Requirement coverage, critical journey coverage, automation coverage and open gaps.</p></div>
+<div class="card"><div class="tag">Evidence stream 2</div><h3>Execution Analyzer</h3><p>Pass/fail trends, blocked tests, flaky tests, environment stability and run completeness.</p></div>
+<div class="card"><div class="tag">Evidence stream 3</div><h3>Defect Risk Analyzer</h3><p>Open defect severity, age, component concentration, recurrence and business impact.</p></div>
+<div class="card"><div class="tag">Evidence stream 4</div><h3>NFR Assessors</h3><p>Performance, security, accessibility, resilience and operational evidence.</p></div>
+<div class="card"><div class="tag">Evidence stream 5</div><h3>Change Risk Agent</h3><p>Release scope, high-risk changes, dependencies and incomplete validation.</p></div>
+<div class="card"><div class="tag">Evidence stream 6</div><h3>Policy Evaluator</h3><p>Mandatory quality gates, waiver status and evidence freshness.</p></div>
+</div>
+<div class="flow" style="margin-top:15px">
+<div class="step"><b>Evidence aggregation</b><span>Normalize sources and verify freshness</span></div><div class="arrow">→</div>
+<div class="step"><b>Release Risk Agent</b><span>Correlate evidence, score risks and explain gaps</span></div><div class="arrow">→</div>
+<div class="step"><b>Readiness Advisor</b><span>Go / conditional go / no-go recommendation</span></div><div class="arrow">→</div>
+<div class="step"><b>Decision record</b><span>Human decision, rationale and audit trail</span></div>
+</div>
+<div class="callout"><strong>Control point:</strong> The workflow provides a recommendation, not an autonomous release authorization. Show evidence, thresholds, exceptions and uncertainty.</div>
+<p class="small">Measures: release assessment lead time • evidence completeness • quality-gate compliance • post-release escape rate.</p>
+</section>
+<section class="slide">
+<div class="kicker">07 • Implementation blueprint</div><h2>Turning the portfolio into an operating capability</h2>
+<p class="subtitle">Build the platform incrementally: standardize the workflow contract, establish reusable agents, integrate enterprise tools and measure outcomes from the first pilot.</p>
+<div class="grid g2" style="margin-top:18px">
+<div class="card"><div class="tag">Workflow contract</div><h3>Define every workflow consistently</h3><p>Trigger • objective • input schema • agent sequence/branches • output artifacts • tool permissions • approval gates • exception path • success metrics.</p></div>
+<div class="card"><div class="tag">Agent contract</div><h3>Make agents composable</h3><p>Single responsibility • clear instructions • accepted inputs • structured output • tools • boundaries • failure behavior • evaluation tests.</p></div>
+<div class="card"><div class="tag">Integration</div><h3>Expose capabilities through MCP</h3><p>Use MCP servers for reusable, governed access to repositories, test management, CI/CD, framework utilities and knowledge sources.</p></div>
+<div class="card"><div class="tag">Measurement</div><h3>Prove outcomes, not activity</h3><p>Measure cycle time, defect leakage, coverage, diagnosis accuracy, workflow completion, human interventions and verified time saved.</p></div>
+</div>
+<h3 style="margin-top:20px">Suggested rollout sequence</h3>
+<div class="flow">
+<div class="step"><b>Foundation</b><span>Agent standards, registry, MCP tools, telemetry</span></div><div class="arrow">→</div>
+<div class="step"><b>Pilot workflows</b><span>Story-to-Test and Failure-to-Resolution</span></div><div class="arrow">→</div>
+<div class="step"><b>Scale</b><span>Code-to-Regression and change feedback loops</span></div><div class="arrow">→</div>
+<div class="step"><b>Optimize</b><span>Release intelligence and enterprise governance</span></div>
+</div>
+<div class="callout" style="margin-top:auto"><strong>North star:</strong> An integrated QE AI-DLC where workflows collaborate across the agile lifecycle, agents are reusable building blocks, and every autonomous action is observable, governed and tied to measurable quality outcomes.</div>
+</section>
+<section class="slide">
+<div class="kicker">Appendix • Design guardrails</div><h2>Principles for a dependable agentic QE ecosystem</h2>
+<div class="grid g2" style="margin-top:18px">
+<div class="card"><h3>Orchestrate, don't over-centralize</h3><p>Keep the orchestrator responsible for routing, sequencing and state. Domain agents own bounded tasks.</p></div>
+<div class="card"><h3>Reuse agents across workflows</h3><p>Impact analysis, risk scoring, evidence collection, test review and reporting should be shared capabilities.</p></div>
+<div class="card"><h3>Make handoffs explicit</h3><p>Use versioned input/output contracts, structured artifacts, correlation IDs and resumable workflow state.</p></div>
+<div class="card"><h3>Ground decisions in evidence</h3><p>Agents cite source artifacts, distinguish facts from inference and surface missing or stale data.</p></div>
+<div class="card"><h3>Apply least privilege</h3><p>Grant tools only the access required; separate read, write and execution permissions.</p></div>
+<div class="card"><h3>Evaluate continuously</h3><p>Test agent accuracy, robustness, prompt injection resistance, tool failures and business outcomes.</p></div>
+</div>
+<p class="subtitle" style="margin-top:22px">QE AI-DLC is a delivery model: the value comes from coordinated workflows and trusted outcomes—not the number of agents deployed.</p>
+</section>
+</div>
+<div aria-hidden="true" aria-labelledby="workflow-modal-title" aria-modal="true" class="workflow-modal" id="workflow-agent-modal" role="dialog"><div class="workflow-modal-backdrop" data-modal-close=""></div><div class="workflow-modal-panel" role="document">
+<div class="workflow-modal-header">
+<div><div class="workflow-modal-kicker">WORKFLOW AGENT DETAILS</div><h2 id="workflow-modal-title">Workflow agents</h2><p id="workflow-modal-description"></p></div>
+<button aria-label="Close dialog" class="workflow-modal-close" data-modal-close="" type="button">×</button>
+</div>
+<div class="workflow-modal-body"><ol id="workflow-modal-agent-list"></ol></div>
+<div class="workflow-modal-footer"><span id="workflow-modal-count"></span><button class="workflow-modal-done" data-modal-close="" type="button">Close</button></div>
+</div></div><div class="footer">
+<div class="brand">QE AI-DLC</div><div class="progress"><span id="bar"></span></div><div class="counter" id="counter">1 / 14</div>
+<div class="nav"><button aria-label="Previous slide" id="prev">←</button><button aria-label="Next slide" id="next">→</button><button id="print" title="Print / Save as PDF">PDF</button></div>
+</div>
+<script>
+
+const workflowAgentData=[{"name": "StoryToTestOrchestrator", "description": "Transforms Jira stories and related enterprise knowledge into enriched acceptance criteria, an approved test plan, reviewed and executed ITAF automation, and a pull request.", "agents": ["Requirement Analysis Agent — Analyzes Jira stories, acceptance criteria, ALM Octane test cases and Confluence content; produces enriched acceptance criteria.", "Test Planner Agent — Uses the enriched acceptance criteria to create planner.md with features, scenarios and test conditions; requests user approval before automation proceeds.", "Test Automation Agent — Generates automation scripts using ITAF standards and reusable components.", "Code Reviewer Agent — Reviews generated automation code for quality, correctness and compliance with coding and ITAF standards.", "Test Execution Agent — Executes the generated tests through ITAF and analyzes execution results.", "PR Agent — Creates a pull request containing the automation code, test evidence and relevant execution details."]}, {"name": "CodeToRegressionOrchestrator", "description": "Analyzes code changes from commits and pull requests, identifies impacted functionality, selects risk-relevant regression tests, coordinates ITAF execution and reports regression health.", "agents": ["Code Change Analyzer Agent — Analyzes Git / Bitbucket commits and pull requests to identify changed files, classes, methods, APIs and code symbols.", "Impact Analysis Agent — Maps code dependencies and identifies affected services, APIs, components and user journeys using architecture and traceability information.", "Risk Assessment Agent — Evaluates business criticality, change complexity, defect history, coverage gaps and potential impact to prioritize testing.", "Regression Test Selector Agent — Selects relevant existing test cases from ALM Octane and ITAF automation assets using impact, requirement traceability, Cucumber tags and execution history.", "Test Execution Planner Agent — Defines test sequence, grouping, environment, runner options, test data and parallel execution strategy.", "Execution Orchestrator Agent — Triggers approved regression runs through ITAF, monitors execution status and collects results and evidence.", "Failure Classification Agent — Classifies failures as application defects, automation issues, environment problems, test data issues or dependency failures; routes deeper diagnosis to TestFailureToResolutionOrchestrator.", "Quality Report Generator Agent — Consolidates impacted coverage, selected and executed tests, pass/fail results, failure categories and residual risk into a regression quality report."]}, {"name": "TestFailureToResolutionOrchestrator", "description": "Diagnoses test failures and guides investigation through resolution.", "agents": ["Failure Detection Agent", "Evidence Collection Agent", "Failure Classification Agent", "Root Cause Analysis Agent", "Code Diagnosis Agent", "Automation Diagnosis Agent", "Environment Diagnosis Agent", "Defect Creation Agent", "Fix Validation Agent"]}, {"name": "RequirementChangeToRegressionOrchestrator", "description": "Identifies requirement changes and updates impacted test coverage.", "agents": ["Requirement Change Detection Agent", "Requirement Comparison Agent", "Impact Analysis Agent", "Risk Assessment Agent", "Test Case Update Agent", "Automation Impact Analysis Agent", "Test Case Reviewer Agent", "Regression Execution Agent"]}, {"name": "DefectToRegressionOrchestrator", "description": "Converts resolved defects into reusable regression coverage.", "agents": ["Defect Analysis Agent", "Root Cause Analysis Agent", "Test Scenario Generator Agent", "Test Case Generator Agent", "Automation Feasibility Agent", "Automation Code Generator Agent", "Test Case Reviewer Agent", "Regression Suite Publisher Agent"]}, {"name": "ReleaseQualityIntelligenceOrchestrator", "description": "Consolidates quality evidence to assess release readiness and risk.", "agents": ["Coverage Analysis Agent", "Execution Analysis Agent", "Defect Risk Analysis Agent", "Performance Assessment Agent", "Security Assessment Agent", "Accessibility Assessment Agent", "Release Risk Assessment Agent", "Readiness Recommendation Agent", "Quality Report Generator Agent"]}];
+const workflowModal=document.getElementById('workflow-agent-modal');
+const workflowModalTitle=document.getElementById('workflow-modal-title');
+const workflowModalDescription=document.getElementById('workflow-modal-description');
+const workflowModalList=document.getElementById('workflow-modal-agent-list');
+const workflowModalCount=document.getElementById('workflow-modal-count');
+let workflowModalTrigger=null;
+function openWorkflowAgents(index,trigger){
+ const workflow=workflowAgentData[index];
+ if(!workflow||!workflowModal)return;
+ workflowModalTrigger=trigger||document.activeElement;
+ workflowModalTitle.textContent=workflow.name;
+ workflowModalDescription.textContent=workflow.description;
+ workflowModalList.replaceChildren();
+ workflow.agents.forEach(agent=>{
+  const item=document.createElement('li');
+  item.textContent=agent;
+  workflowModalList.appendChild(item);
+ });
+ workflowModalCount.textContent=workflow.agents.length+' participating agents';
+ workflowModal.classList.add('is-open');
+ workflowModal.setAttribute('aria-hidden','false');
+ document.body.classList.add('modal-open');
+ const closeButton=workflowModal.querySelector('.workflow-modal-close');
+ if(closeButton)closeButton.focus();
+}
+function closeWorkflowAgents(){
+ if(!workflowModal||!workflowModal.classList.contains('is-open'))return;
+ workflowModal.classList.remove('is-open');
+ workflowModal.setAttribute('aria-hidden','true');
+ document.body.classList.remove('modal-open');
+ if(workflowModalTrigger&&workflowModalTrigger.focus)workflowModalTrigger.focus();
+}
+document.querySelectorAll('.workflow-agent-link').forEach(link=>{
+ link.addEventListener('click',event=>{
+  event.preventDefault();
+  const index=Number(link.dataset.workflow)-1;
+  openWorkflowAgents(index,link);
+ });
+});
+workflowModal?.querySelectorAll('[data-modal-close]').forEach(control=>control.addEventListener('click',closeWorkflowAgents));
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape')closeWorkflowAgents();
+ if(workflowModal?.classList.contains('is-open')&&event.key==='Tab'){
+  const focusable=[...workflowModal.querySelectorAll('button')].filter(el=>!el.disabled);
+  if(focusable.length){
+   const first=focusable[0],last=focusable[focusable.length-1];
+   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  }
+ }
+});
+
+const slides=[...document.querySelectorAll('.slide')];let current=0;
+const bar=document.getElementById('bar'),counter=document.getElementById('counter');
+function show(n){current=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===current));bar.style.width=((current+1)/slides.length*100)+'%';counter.textContent=(current+1)+' / '+slides.length;}
+document.getElementById('prev').addEventListener('click',()=>show(current-1));
+document.getElementById('next').addEventListener('click',()=>show(current+1));
+document.getElementById('print').addEventListener('click',()=>window.print());
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1)});
+let touchX=null;document.addEventListener('touchstart',e=>touchX=e.changedTouches[0].screenX,{passive:true});document.addEventListener('touchend',e=>{if(touchX===null)return;let d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>60)show(current+(d<0?1:-1));touchX=null},{passive:true});
+show(0);
+</script>
+</body>
+</html>
